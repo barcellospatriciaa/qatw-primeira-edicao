@@ -33,13 +33,11 @@ test('DP PageObject: Deve permitir logar após informar codigo válido', async (
   await loginPage.informarCpf(usuario.cpf);
   await loginPage.informaSenha(usuario.senha);
   
-  // wait para aguardar a chegada do código 2fa - formato temporario
-  await page.waitForTimeout(3000);
+  await page.getByRole('heading', { name : 'Verificação em duas etapas' })
+    .waitFor({timeout: 3000});
 
-  const codigo =  await obterCodigo2fa();
+  const codigo =  await obterCodigo2fa(usuario.cpf);
   await loginPage.informa2FA(codigo);
-
-  await page.waitForTimeout(2000);
   
  expect(await dashPage.validaSaldo()).toHaveText('R$ 5.000,00');
 
@@ -57,14 +55,12 @@ test('DP Actions: Deve permitir logar após informar codigo válido 2 ', async (
   await loginActions.informarCpf(usuario.cpf);
   await loginActions.informaSenha(usuario.senha);
   
-  // wait para aguardar a chegada do código 2fa - formato temporario
-  await page.waitForTimeout(3000);
+  await page.getByRole('heading', { name : 'Verificação em duas etapas' })
+    .waitFor({timeout: 3000});
 
-  const codigo =  await obterCodigo2fa();
+  const codigo =  await obterCodigo2fa(usuario.cpf);
   await loginActions.informa2FA(codigo);
-
-  await page.waitForTimeout(2000);
   
- expect(await loginActions.validaSaldo()).toHaveText('R$ 5.000,00');
+ await expect(await loginActions.validaSaldo()).toHaveText('R$ 5.000,00');
 
 });
