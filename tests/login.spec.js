@@ -3,6 +3,8 @@ import { obterCodigo2fa } from '../support/db';
 import { LoginPage } from '../pages/LoginPage';
 import { DashPage } from '../pages/DashPage';
 import { LoginActions } from '../actions/LoginActions';
+import { cleanJobs, getJob } from '../support/redis';
+
 
 test('Não deve permitir logar após informar codigo invalido', async ({ page }) => {
   const loginPage = new LoginPage(page);
@@ -29,6 +31,8 @@ test('DP PageObject: Deve permitir logar após informar codigo válido', async (
     senha: '147258',
   };
 
+  await cleanJobs();
+
   await loginPage.acessarPagina();
   await loginPage.informarCpf(usuario.cpf);
   await loginPage.informaSenha(usuario.senha);
@@ -36,7 +40,12 @@ test('DP PageObject: Deve permitir logar após informar codigo válido', async (
   await page.getByRole('heading', { name : 'Verificação em duas etapas' })
     .waitFor({timeout: 3000});
 
-  const codigo =  await obterCodigo2fa(usuario.cpf);
+    // * busca no Redis o código 2FA
+    const codigo = await getJob();
+
+    // * busca no banco de dados o código 2FA 
+  // const codigo =  await obterCodigo2fa(usuario.cpf);
+
   await loginPage.informa2FA(codigo);
   
  expect(await dashPage.validaSaldo()).toHaveText('R$ 5.000,00');
