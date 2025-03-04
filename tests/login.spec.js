@@ -37,6 +37,10 @@ test('DP PageObject: Deve permitir logar após informar codigo válido', async (
   await loginPage.informarCpf(usuario.cpf);
   await loginPage.informaSenha(usuario.senha);
   
+  //* Essa espera, diferente de um await convencional que apenas aguarda por 3s para fazer alguma coisa,
+  // * tem por objetivo aguardar o elemento que exibe verificação em duas etapas para então pegar o ultimo código 2FA
+  //* então aqui tem até 3s para aparecer o elemento para depois buscar o código, caso contrário, o teste falha.
+  
   await page.getByRole('heading', { name : 'Verificação em duas etapas' })
     .waitFor({timeout: 3000});
 
@@ -48,7 +52,7 @@ test('DP PageObject: Deve permitir logar após informar codigo válido', async (
 
   await loginPage.informa2FA(codigo);
   
- expect(await dashPage.validaSaldo()).toHaveText('R$ 5.000,00');
+ await expect(await dashPage.validaSaldo()).toHaveText('R$ 5.000,00');
 
 });
 

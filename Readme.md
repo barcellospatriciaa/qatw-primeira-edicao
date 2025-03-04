@@ -58,6 +58,12 @@ O projeto utiliza Docker Compose para gerenciar os serviços necessários para o
    ```sh
    npx playwright test --ui
    ```
+## 📍 Endereços usados
+
+- [Mailtrap](https://mailtrap.io/) ferramenta para enviar e receber o código de autenticação
+- [Paybank](http://paybank-mf-auth:3000/) se for usar a porta 3000 no arquivo de dns local, o acesso para o front ficará assim.
+- [Pg Admin](http://paybank-dbadm:15432/) gerenciador do banco de dados. Usuario e senha no docker compose.
+- [Redis](http://paybank-redisadm:5540/) gerenciador de filas do redis, basta criar a conexão com banco do redis.
 
 ## 📄 Licença
 Este projeto está sob a licença MIT.
